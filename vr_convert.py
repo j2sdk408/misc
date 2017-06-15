@@ -38,7 +38,7 @@ if not os.path.isdir(output_dir):
 os.chdir(output_dir)    
 
 print "Converting to .png & .wav..."
-run_command(r""""%s" ..\%s -vo png -ao pcm""" % (mplayer_bin, input_file))
+run_command(r""""%s" ..\%s -vo png:z=6 -ao pcm""" % (mplayer_bin, input_file))
 
 black = Image.open("../black.png")
 #os.chdir("output")
@@ -62,10 +62,11 @@ for png_file in [x for x in os.listdir(".") if x.endswith("png")]:
     out.save(png_file)
 
 print "Converting .png & .wav to .mp4..."
+input_setting = "mf://*.png -mf fps=30"
 ovc_setting = r"-ovc x264"
 oac_setting = r"-ovc mp3lame -audiofile audiomap.wav"
 of_setting = r"-of lavf -lavfopts format=mp4"
-run_command(r""""{}" mf://*.png {} {} {} -o ..\{}.mp4""".format(mencoder_bin, ovc_setting, oac_setting, of_setting, output_file))
+run_command(r""""{}" {} {} {} {} -o ..\{}.mp4""".format(mencoder_bin, input_setting, ovc_setting, oac_setting, of_setting, output_file))
 
 
 print "Injecting VR & 360 codec..."
