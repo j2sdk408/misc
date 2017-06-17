@@ -1,7 +1,8 @@
 import wave
 import os
 import sys
-import matplotlib.pyplot as plt
+import numpy
+from scipy import signal
 
 
 # dump audio format
@@ -52,14 +53,21 @@ wav_list = [
     "right\\audiodump.wav",
 ]
 
-for wav_idx, wav_file in enumerate(wav_list):
+list_l = get_raw(wav_list[0])[0]
+list_r = get_raw(wav_list[1])[0]
+#list_r = get_raw(wav_list[0])[1]
 
-    ch_list = get_raw(wav_file)
+window_len = 48000
+corr_list = []
 
-    for ch_idx, curr_value in enumerate(ch_list):
+for idx in range(len(list_l) / window_len):
+    array_l = numpy.array(list_l[idx * window_len: (idx + 1) * window_len])
+    array_r = numpy.array(list_r[idx * window_len: (idx + 1) * window_len])
+    corr = numpy.argmax(signal.correlate(array_l, array_r))
+    print "#{}: {}".format(idx, corr)
+    corr_list.append(corr)
 
-        plt.subplot(len(ch_list), 1, ch_idx + 1)
-        plt.plot(curr_value[8000:10000])
+print "mean = {}".format(sum(corr_list) / len(corr_list))
 
-plt.savefig("wave_all.png")
-#plt.show()
+with open("log.txt", "w") as f:
+    f.write(str(corr_list))

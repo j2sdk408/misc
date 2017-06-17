@@ -13,8 +13,8 @@ import os
 import sys
 
 mplayer_dir = r"D:\local program\mplayer-svn-37324-2-x86_64"
-mplayer_bin = r"%s\mplayer.exe".format(mplayer_dir)
-mencoder_bin = r"%s\mencoder.exe".format(mplayer_dir)
+mplayer_bin = r"{}\mplayer.exe".format(mplayer_dir)
+mencoder_bin = r"{}\mencoder.exe".format(mplayer_dir)
 
 def run_command(cmd):
     """run commend using subprocess"""
@@ -60,11 +60,12 @@ for png_file in [x for x in os.listdir(".") if x.endswith("png")]:
     
     orig.close()
     out.save(png_file)
+print "done."
 
 print "Converting .png & .wav to .mp4..."
 input_setting = "mf://*.png -mf fps=30"
 ovc_setting = r"-ovc x264"
-oac_setting = r"-ovc mp3lame -audiofile audiomap.wav"
+oac_setting = r"-oac mp3lame -audiofile audiodump.wav"
 of_setting = r"-of lavf -lavfopts format=mp4"
 run_command(r""""{}" {} {} {} {} -o ..\{}.mp4""".format(mencoder_bin, input_setting, ovc_setting, oac_setting, of_setting, output_file))
 
